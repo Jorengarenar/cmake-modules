@@ -89,7 +89,7 @@ function(add_boost_test_file sourceFile)
         list(POP_BACK suites)
       elseif("${line}" MATCHES "BOOST_[A-Z]+_TEST_SUITE")
         string(REGEX
-          REPLACE ".*BOOST_[A-Z]+_TEST_SUITE\\( *([A-Za-z_0-9]+) *\\).*"
+          REPLACE ".*BOOST_[A-Z]+_TEST_SUITE\\( *([A-Za-z_0-9]+).*\\).*"
           "\\1" suiteName "${line}")
         if(suites)
           list(GET suites -1 prev)
