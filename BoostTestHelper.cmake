@@ -1,4 +1,4 @@
-# Author:  Jorengarenar
+# Author:  Jorengarenar <https://joren.ga>
 # License: MIT
 
 # Init
@@ -8,9 +8,14 @@ find_package(
   COMPONENTS unit_test_framework
   REQUIRED)
 
+# Directory with code of tests
+if(NOT TESTS_DIR)
+  set(TESTS_DIR tests)
+endif()
+
 # Directory with tests' executables
-if(NOT BIN_DIR)
-  set(BIN_DIR ${CMAKE_SOURCE_DIR}/bin)
+if(NOT TESTS_BIN_DIR)
+  set(TESTS_BIN_DIR "${PROJECT_BINARY_DIR}/${TESTS_DIR}")
 endif()
 
 function(add_boost_test testExe testName testBinDir)
@@ -22,8 +27,7 @@ endfunction()
 
 function(check_boost_test line suites testFullName)
   string(REGEX
-    REPLACE ".*BOOST[_A-Z]+_TEST_CASE[_A-Z]*\\( *([A-Za-z_0-9]+).*\\).*"
-    "\\1" testName "${line}")
+    REPLACE ".*BOOST[_A-Z]+_TEST_CASE[_A-Z]*\\( *([A-Za-z_0-9]+).*\\).*" "\\1" testName "${line}")
 
   if("${line}" MATCHES "BOOST_[A-Z]+_TEST_CASE_TEMPLATE")
     set(testName "${testName}*")
@@ -33,9 +37,7 @@ function(check_boost_test line suites testFullName)
     list(GET suites -1 suite)
   endif()
 
-  set(${testFullName}
-    "${suite}${testName}"
-    PARENT_SCOPE)
+  set(${testFullName} "${suite}${testName}" PARENT_SCOPE)
 
   add_boost_test("${testExe}" "${suite}${testName}" "${testsBinDir}")
 endfunction()
@@ -46,11 +48,11 @@ function(add_boost_test_file sourceFile)
   message(${ARGV})
   get_filename_component(testExe ${sourceFile} NAME_WE)
   get_filename_component(testDir ${sourceFile} DIRECTORY)
-  set(testBinDir ${BIN_DIR}/${testDir})
+  string(REGEX REPLACE "^${TESTS_DIR}/" "" testDir "${testDir}")
+  set(testBinDir ${TESTS_BIN_DIR}/${testDir})
 
   add_executable(${testExe} ${sourceFile})
-  set_target_properties(${testExe} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
-    ${testBinDir})
+  set_target_properties(${testExe} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${testBinDir})
   target_link_libraries(${testExe} ${ARGN} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
   file(READ "${sourceFile}" srcContents)
