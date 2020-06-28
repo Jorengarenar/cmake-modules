@@ -53,7 +53,6 @@ endfunction()
 # Add Boost test source file
 #     add_boost_test_file(<src> [ <libs> ... ])
 function(add_boost_test_file sourceFile)
-  message(${ARGV})
   get_filename_component(testExe ${sourceFile} NAME_WE)
   get_filename_component(testDir ${sourceFile} DIRECTORY)
   string(REGEX REPLACE "^${TESTS_DIR}" "" testDir "${testDir}")
