@@ -2,20 +2,28 @@
 # License: MIT
 
 # Init
-include(CTest)
+if(NOT BUILD_TESTING)
+  include(Colors OPTIONAL)
+  message("${FG_YELLOW}CTest module wasn't manually included in the top CMakeLists.txt file of a project${RESET}")
+  include(CTest)
+endif()
+
 find_package(
   Boost
   COMPONENTS unit_test_framework
   REQUIRED)
 
-# Directory with code of tests
 if(NOT TESTS_DIR)
   set(TESTS_DIR tests)
 endif()
 
-# Directory with tests' executables
+# Directory where tests' executables should be placed
 if(NOT TESTS_BIN_DIR)
-  set(TESTS_BIN_DIR "${PROJECT_BINARY_DIR}/${TESTS_DIR}")
+  if(${CMAKE_CURRENT_BINARY_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+    set(TESTS_BIN_DIR "${CMAKE_BINARY_DIR}/${TESTS_DIR}_bin")
+  else()
+    set(TESTS_BIN_DIR "${CMAKE_CURRENT_BINARY_DIR}/bin")
+  endif()
 endif()
 
 function(add_boost_test testExe testName testBinDir)
@@ -48,7 +56,7 @@ function(add_boost_test_file sourceFile)
   message(${ARGV})
   get_filename_component(testExe ${sourceFile} NAME_WE)
   get_filename_component(testDir ${sourceFile} DIRECTORY)
-  string(REGEX REPLACE "^${TESTS_DIR}/" "" testDir "${testDir}")
+  string(REGEX REPLACE "^${TESTS_DIR}" "" testDir "${testDir}")
   set(testBinDir ${TESTS_BIN_DIR}/${testDir})
 
   add_executable(${testExe} ${sourceFile})
