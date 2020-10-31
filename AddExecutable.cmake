@@ -5,7 +5,14 @@ endif()
 set_target_properties("${CMAKE_PROJECT_NAME}" PROPERTIES
   OUTPUT_NAME "${EXECUTABLE_NAME}")
 
-add_custom_target(run
-  COMMAND "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${EXECUTABLE_NAME}"
-  DEPENDS "${CMAKE_PROJECT_NAME}"
-  )
+if(RUN_ARGS)
+  add_custom_target(run
+    COMMAND "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${EXECUTABLE_NAME}" ${RUN_ARGS}
+    DEPENDS "${CMAKE_PROJECT_NAME}"
+    )
+else()
+  add_custom_target(run
+    COMMAND "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${EXECUTABLE_NAME}"
+    DEPENDS "${CMAKE_PROJECT_NAME}"
+    )
+endif()
