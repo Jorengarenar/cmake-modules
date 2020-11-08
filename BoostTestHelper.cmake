@@ -8,10 +8,12 @@ if(NOT BUILD_TESTING)
   include(CTest)
 endif()
 
-find_package(
-  Boost
-  COMPONENTS unit_test_framework
-  REQUIRED)
+find_package(Boost COMPONENTS unit_test_framework)
+
+if(NOT BOOST_FOUND)
+  include(Colors OPTIONAL)
+  message("${FG_YELLOW}Boost Unit Test Framework could not be found${RESET}")
+endif()
 
 if(NOT TESTS_DIR)
   set(TESTS_DIR tests)
