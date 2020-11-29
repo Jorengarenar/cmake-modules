@@ -1,6 +1,5 @@
-Clone as subdirecotry of `extern` dir in your project root:
 ```sh
-git submodule add https://github.com/Jorengarenar/cmake-modules.git cmake
+git submodule add https://github.com/Jorengarenar/cmake-modules.git extern/cmake
 ```
 
 In `CMakeLists.txt` add:
